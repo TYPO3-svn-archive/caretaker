@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<!-- 
+/**
+ * This is a file of the caretaker project.
+ * Copyright 2008 by n@work Internet Informationssystem GmbH (www.work.de)
+ * 
+ * @Author	Thomas Hempel 		<thomas@work.de>
+ * @Author	Martin Ficzel		<martin@work.de>
+ * @Author	Patrick Kollodzik	<patrick@work.de>
+ * 
+ * $$Id: ds.tx_caretaker_typo3_extensions.xml 33 2008-06-13 14:00:38Z thomas $$
+ */
+-->
+
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+			<ROOT>
+				<TCEforms> 
+                        <sheetTitle>Default</sheetTitle> 
+                </TCEforms> 
+				<type>array</type>
+				<el>
+				
+					<date_from>
+						<TCEforms>
+							<label>Date from</label>
+							<config>
+								<type>input</type>
+								<size>15</size>
+							</config>
+						</TCEforms>
+					</date_from>
+					
+					<date_to>
+						<TCEforms>
+							<label>Date to</label>
+							<config>
+								<type>input</type>
+								<size>15</size>
+							</config>
+						</TCEforms>
+					</date_to>
+					
+					<date_hours>
+						<TCEforms>
+							<label>Last xx hours (default: 7 Days)</label>
+							<config>
+								<type>select</type>
+								<items type="array">
+				                  <numIndex index="0" type="array">
+				                    <numIndex index="0">Use date above</numIndex>
+				                    <numIndex index="1">0</numIndex>
+				                  </numIndex>         
+				                  <numIndex index="1" type="array">
+				                    <numIndex index="0">24 H</numIndex>
+				                    <numIndex index="1">24</numIndex>
+				                  </numIndex>
+				                  <numIndex index="2" type="array">
+				                    <numIndex index="0">3 Days</numIndex>
+				                    <numIndex index="1">72</numIndex>
+				                  </numIndex>
+				                  <numIndex index="3" type="array">
+				                    <numIndex index="0">7 Days</numIndex>
+				                    <numIndex index="1">168</numIndex>
+				                  </numIndex>
+				                  <numIndex index="4" type="array">
+				                    <numIndex index="0">1 Month</numIndex>
+				                    <numIndex index="1">720</numIndex>
+				                  </numIndex>
+				                  <numIndex index="5" type="array">
+				                    <numIndex index="0">3 Month</numIndex>
+				                    <numIndex index="1">2160</numIndex>
+				                  </numIndex>
+				                  <numIndex index="6" type="array">
+				                    <numIndex index="0">all</numIndex>
+				                    <numIndex index="1">-1</numIndex>
+				                  </numIndex>
+				                </items>
+				                <minitems>0</minitems>
+				                <maxitems>1</maxitems>
+				                <size>1</size>
+				                <default>168</default>
+				            </config>
+						</TCEforms>
+					</date_hours>
+					
+					<date_pattern>
+						<TCEforms>
+							<label>Date pattern in log file (default: /\w{3} \w{3} \d{2} \d{2}:\d{2}:\d{2} \d{4}/)</label>
+							<config>
+								<type>input</type>
+								<default>/\w{3} \w{3} \d{2} \d{2}:\d{2}:\d{2} \d{4}/</default>
+							</config>
+						</TCEforms>
+					</date_pattern>
+					
+					<log_file>
+						<TCEforms>
+							<label>Logfile (absolut path)</label>
+							<config>
+								<type>input</type>
+							</config>
+						</TCEforms>
+					</log_file>
+				
+					<patterns_configuration>
+						<TCEforms>
+							<label>Patterns</label>
+							<config>
+								<type>text</type>
+								<rows>10</rows>
+							</config>
+						</TCEforms>
+					</patterns_configuration>
+					
+					<!-- <response_time_warning>
+						<TCEforms>
+							<label>Warning Response Time in Seconds</label>
+							<config>
+								<type>input</type>
+								<size>10</size>
+								<eval>int</eval>
+							</config>
+						</TCEforms>
+					</response_time_warning>
+
+					<response_time_error>
+						<TCEforms>
+							<label>Maximal allowed Response Time in Seconds</label>
+							<config>
+								<type>input</type>
+								<eval>int</eval>
+								<size>10</size>
+							</config>
+						</TCEforms>
+					</response_time_error>
+					
+					<selenium_server>
+						<TCEforms>
+							<label>Select Selenium Server</label>
+							<config>
+								<type>select</type>
+								<foreign_table>tx_caretakerselenium_server</foreign_table>
+								<items> 
+									<numIndex index="0"> 
+										<numIndex index="0">All Servers</numIndex> 
+										<numIndex index="1">-1</numIndex> 
+									</numIndex> 
+                                </items> 
+                                <maxitems>9</maxitems>
+								<minitems>1</minitems>
+								<size>5</size>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</selenium_server> -->
+					
+				</el>
+			</ROOT>
+
+</T3DataStructure>
