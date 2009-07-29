@@ -8,6 +8,25 @@
  * @Author	Patrick Kollodzik	<patrick@work.de>
  * @Author	Thorben Kapp		<thorben@work.de>
  * 
+ * This service runs the log file tests.
+ * A logfile is read using the system functions wc, head and tail.
+ * It reads the file in blocks of lines to avoid a memory overflow.
+ * @todo The existance of the three needed functions should be checked.
+ * Eventually you can override the isExecutable function from the parent class
+ * and use it for that. Than this should return some kind of result or exception.
+ * 
+ * After reading one block the readed lines are processed, that means that they
+ * are checked against the given date and if this matches also against the given pattern
+ * how the error message, you are looking for, looks like in the log file.
+ * 
+ * If the pattern matches the information of the error message is put into an array.
+ * 
+ * NOTE: The script is currently used to find missing resources so the error message
+ * that is produced at the end of the test looks like that and only includes the first to saved
+ * subpatterns from the error message pattern.
+ * @todo This should be improved that there can be used an own error messages that uses numbered markers
+ * to insert the saved parts from the subpatterns in.
+ * 
  * $$Id: class.tx_caretaker_typo3_extensions.php 33 2008-06-13 14:00:38Z thomas $$
  */
 
@@ -40,6 +59,8 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 	
 	protected $valueDescription = 'Matches';
 	
+	private $logFile = '';
+	
 	/**
 	 * Returns the given value description
 	 * @return string
@@ -58,23 +79,25 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 	 */
 	public function runTest(){
 		
+		$startTime = 0;
+		$endTime = time();
+		
 		// loading the configuration
 		$dateFrom = $this->getConfigValue('date_from');
 		$dateTo = $this->getConfigValue('date_to');
 		$dateHours = $this->getConfigValue('date_hours');
 		$datePattern = $this->getConfigValue('date_pattern');
-		$logFile = $this->getConfigValue('log_file');
+		$this->logFile = $this->getConfigValue('log_file');
 		$patterns = explode("\n",$this->getConfigValue('patterns_configuration'));
+		
+		// if the file is not available return a result with state error
+		if(!file_exists($this->logFile)) return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'File doesn\'t exist.');
 		
 		// eval start and end time
 		switch($dateHours) {
 			case 0:
 				$startTime = $dateFrom;
 				$endTime = $dateTo;
-				break;
-			case -1:
-				$startTime = 0;
-				$endTime = time();
 				break;
 			case 24:
 				$startTime = time()-3600*24;
@@ -96,36 +119,60 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 				$startTime = strtotime(date('Y').(date('m')-3).date('d H:i:s'));
 				$endTime = time();
 				break;
+			default:
+				// return an error result to indicate that something went wrong
+				return tx_caretaker_TestResult(TX_CARETAKER_STATE_ERROR, 0, 'No valid option for log time was selected!');
+				break;
+			/*
+			 * this could easily leed to memory overflow, so it is disabled
+			default:
+				$startTime = 0;
+				$endTime = time();
+				break;
+			*/
 		}
 		
-		// open, read and afterwards close the file
-		$fileHandle = fopen($logFile, 'r');
-		$fileContent = fread($fileHandle, filesize($logFile));
-		fclose($fileHandle);
+		// get the line count of the file
+		$lineCount = $this->getLineCount($logFile);
 		
-		// explode the file content into lines
-		$lines = explode("\n", $fileContent);
+		// if the line count could not be retreived return a result with state error
+		if(!$lineCount) return tx_caretaker_TestResukt(TX_CARETAKER_STATE_ERROR, 0, 'Line count of the file could not be retrieved!');
 		
 		$foundErrors = array();
 		
-		// go through each line
-		foreach($lines as $line) {
+		// read the lines in blocks from the file
+		while($lineCount >= 0) {
 			
-			if(empty($line)) continue;
+			// get the lines and explode them to an array
+			$lines = $this->readLines($lineCount);
+			$lines = explode("\n", $lines);
 			
-			preg_match($datePattern, $line, $timeMatch);
-			$lineTimeStamp = strtotime($timeMatch[0]);
+			$readedLinesCount = count($lines);
+			$lineCount -= $readedLinesCount;
 			
-			if($lineTimeStamp >= $startTime && $lineTimeStamp <= $endTime) {
-			
-				// through each pattern
-				foreach($patterns as $pattern) {
+			// proceed with the error check
+			foreach($lines as $line) {
+				
+				preg_match($datePattern, $line, $timeMatch);
+				$lineTimeStamp = strtotime($timeMatch[0]);
+				
+				// if the time from the log file is in the requested range check if there is an error
+				if($lineTimeStamp >= $startTime && $lineTimeStamp <= $endTime) {
 					
-					// and check if it matches
-					if(preg_match($pattern, $line, $match)) {
+					// check each pattern
+					foreach($patterns as $pattern) {
 						
-						// if it does, put it into the $foundErrors array
-						$foundErrors[] = array($match[1], $match[2]);
+						// and if it matches
+						if(preg_match($pattern, $line, $match)) {
+							
+							/**
+							 * here might happen a memory overflow when there are many errors
+							 * to put into the array: If this is the case you should set the
+							 * time for the log entries to a lower option
+							 */
+							// put it into the $foundErrors array
+							$foundErrors[] = array($match[1], $match[2]);
+						}
 					}
 				}
 			}
@@ -145,7 +192,80 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 	}
 	
 	/**
+	 * This function does a system call. It calls wc -l filename to get the lines in the file
+	 * @return int The line count of the file
+	 */
+	private function getLineCount() {
+		
+		$logFile = $this->logFile;
+		
+		$descriptorSpecs = array(
+			0 => array("pipe","r"),
+			1 => array("pipe","w"),
+			2 => array("pipe","w")
+		);
+		$output = '';
+		
+		$wc = proc_open('wc -l '.$logFile, $descriptorSpecs, $pipes);
+		
+		if(is_resource($wc)) {
+			
+			$output = stream_get_contents($pipes[1]);
+			fclose($pipes[0]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			
+			// important to close all pipes before closeing the process
+			// more information: see in php manual
+			proc_close($wc);
+		}
+		
+		if(preg_match('/(\d*)/', $output, $match)) {
+			
+			return (int)$match[1];
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Also calls system functions. It uses head and tail to cut out some lines of the file.
+	 * Currently it starts at position provided by line count. It reads from the end of the file
+	 * to this position. Tail reads the last - currently 10000 - lines from this part. The lines are
+	 * return as a string.
+	 * 
+	 * @param integer $lineCount
+	 * @return string The retreived lines.
+	 */
+	private function readLines($lineCount) {
+		
+		$logFile = $this->logFile;
+		
+		$descriptorSpecs = array(
+			0 => array("pipe","r"),
+			1 => array("pipe","w"),
+			2 => array("pipe","w")
+		);
+		$output = '';
+		
+		$headTail = proc_open('head -n -'.$lineCount.' '.$logFile.' | tail -n 10000', $descriptorSpecs, $pipes);
+		
+		if(is_resource($headTail)) {
+			
+			$output = stream_get_contents($pipes[1]);
+			fclose($pipes[0]);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			
+			proc_close($headTail);
+		}
+		
+		return $output;
+	}
+	
+	/**
 	 * Combines the errors found to a human readable message including the numbers of errors
+	 * 
 	 * @param $foundErrors The array with found matches
 	 * @return string The combined error message
 	 */

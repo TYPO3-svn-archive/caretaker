@@ -74,10 +74,12 @@
 				                    <numIndex index="0">3 Month</numIndex>
 				                    <numIndex index="1">2160</numIndex>
 				                  </numIndex>
+				                  <!-- could easily leed to memory overflow, so it is deactivated
 				                  <numIndex index="6" type="array">
 				                    <numIndex index="0">all</numIndex>
 				                    <numIndex index="1">-1</numIndex>
 				                  </numIndex>
+				                   -->
 				                </items>
 				                <minitems>0</minitems>
 				                <maxitems>1</maxitems>
@@ -99,7 +101,7 @@
 					
 					<log_file>
 						<TCEforms>
-							<label>Logfile (absolut path)</label>
+							<label>Logfile (absolute path)</label>
 							<config>
 								<type>input</type>
 							</config>
