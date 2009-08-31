@@ -1,4 +1,4 @@
-\ihead{Caretaker \ldots TYPO3 monitoring}
+\ihead{TYPO3 website monitoring with Caretaker}
 
 \begin{center}
 {\LARGE
