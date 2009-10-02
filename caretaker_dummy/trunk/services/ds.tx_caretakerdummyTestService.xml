@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<!-- 
+/**
+ * This is a file of the caretaker project.
+ * Copyright 2008 by n@work Internet Informationssystem GmbH (www.work.de)
+ * 
+ * @Author	Thomas Hempel 		<thomas@work.de>
+ * @Author	Martin Ficzel		<martin@work.de>
+ * @Author	Patrick Kollodzik	<patrick@work.de>
+ * 
+ * $$Id: ds.tx_caretaker_typo3_extensions.xml 33 2008-06-13 14:00:38Z thomas $$
+ */
+-->
+
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<TCEforms> 
+			<sheetTitle>HTTP-Communication</sheetTitle>
+		</TCEforms>
+		<type>array</type>
+		<el>	
+			<result>
+				<TCEforms>
+					<label>Select the desired result</label>
+					<config>
+						<type>select</type>
+					    <items>
+					    	<numIndex index="0">
+					    		<numIndex index="0">Undefined</numIndex>
+								<numIndex index="1">-1</numIndex>
+					    	</numIndex>
+					    	<numIndex index="1">
+					    		<numIndex index="0">OK</numIndex>
+								<numIndex index="1">0</numIndex>
+					    	</numIndex>
+					    	<numIndex index="2">
+					    		<numIndex index="0">Warnig</numIndex>
+								<numIndex index="1">1</numIndex>
+					    	</numIndex>
+					    	<numIndex index="3">
+					    		<numIndex index="0">Error</numIndex>
+								<numIndex index="1">2</numIndex>
+					    	</numIndex>
+							<numIndex index="4">
+					    		<numIndex index="0">Random</numIndex>
+								<numIndex index="1">random</numIndex>
+					    	</numIndex>
+					  	</items>
+					  	<default>random</default>
+					</config>
+				</TCEforms>
+			</result>
+		</el>
+	</ROOT>
+</T3DataStructure>
