@@ -44,16 +44,25 @@ class tx_caretakerdummyTestService extends tx_caretaker_TestServiceBase {
 		if ($result == 'random'){
 			$result = rand(-1,2);
 		}
-		
+
+		$info_array = array(
+			'values'  => array('foo'=>' foobar '),
+			'details' => array(
+				array ( 'message' => 'LLL:EXT:caretaker_dummy/locallang_fe.xml:detail', 'values'=>array ('bar'=>'blubber')),
+				'this is a plain message',
+				array ( 'message' => 'LLL:EXT:caretaker_dummy/locallang_fe.xml:detail', 'values'=>array ('baz'=>'blubber2')),
+			)
+		);
+
 		switch ($result) {
 			case 0:
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_OK, 0, 'Dummy is OK');
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_OK, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
 			case 1;
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_WARNING, 0, 'Dummy is WARNING');
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_WARNING, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
 			case 2;
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'Dummy is ERROR');
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
 			default:
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_UNDEFINED, 0, 'Dummy is UNDEFINED');
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_UNDEFINED, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
 		}
 	}
 }
