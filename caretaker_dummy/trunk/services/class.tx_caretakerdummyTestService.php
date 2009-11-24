@@ -2,11 +2,11 @@
 /**
  * This is a file of the caretaker project.
  * Copyright 2008 by n@work Internet Informationssystem GmbH (www.work.de)
- * 
+ *
  * @Author	Thomas Hempel 		<thomas@work.de>
  * @Author	Martin Ficzel		<martin@work.de>
  * @Author	Patrick Kollodzik	<patrick@work.de>
- * 
+ *
  * $$Id: class.tx_caretaker_typo3_extensions.php 33 2008-06-13 14:00:38Z thomas $$
  */
 
@@ -36,38 +36,36 @@
 require_once (t3lib_extMgm::extPath('caretaker').'/services/class.tx_caretaker_TestServiceBase.php');
 
 class tx_caretakerdummyTestService extends tx_caretaker_TestServiceBase {
-	
-	public function runTest(){
+
+	public function runTest() {
 
 		$result    = $this->getConfigValue('result');
-		
-		if ($result == 'random'){
+
+		if ($result == 'random') {
 			$result = rand(-1,2);
 		}
 
-		$info_array = array(
-			'values'  => array('foo'=>' foobar '),
-			'details' => array(
-				array ( 'message' => 'LLL:EXT:caretaker_dummy/locallang_fe.xml:detail', 'values'=>array ('bar'=>'blubber')),
-				'this is a plain message',
-				array ( 'message' => 'LLL:EXT:caretaker_dummy/locallang_fe.xml:detail', 'values'=>array ('baz'=>'blubber2')),
-			)
-		);
+		$message = new tx_caretaker_ResultMessage( 'foo ###VALUE_FOO### baz' , array('foo'=>'bar') );
+
+		$submessages = array();
+		$submessages[] =  new tx_caretaker_ResultMessage( 'LLL:EXT:caretaker_dummy/locallang_fe.xml:detail' , array('foo'=>'bar', 'bar'=>'baz') );
+		$submessages[] =  new tx_caretaker_ResultMessage( 'LLL:EXT:caretaker_dummy/locallang_fe.xml:detail'  );
+		$submessages[] =  new tx_caretaker_ResultMessage( 'foo {LLL:EXT:caretaker_dummy/locallang_fe.xml:detail}' , array('foo'=>'bar', 'bar'=>'baz') );
 
 		switch ($result) {
 			case 0:
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_OK, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_OK, 0, $message , $submessages );
 			case 1;
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_WARNING, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_WARNING, 0, $message , $submessages  );
 			case 2;
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, $message , $submessages  );
 			default:
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_UNDEFINED, 0, 'LLL:EXT:caretaker_dummy/locallang_fe.xml:message' , $info_array );
+				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_UNDEFINED, 0, $message , $submessages  );
 		}
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/caretaker/services/class.tx_caretaker_typo3_extensions.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/caretaker/services/class.tx_caretaker_typo3_extensions.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/caretaker/services/class.tx_caretaker_typo3_extensions.php']);
 }
 ?>
