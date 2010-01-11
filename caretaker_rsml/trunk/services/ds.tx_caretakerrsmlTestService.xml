@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<!-- 
+/**
+ * This is a file of the caretaker project.
+ * Copyright 2008 by n@work Internet Informationssystem GmbH (www.work.de)
+ * 
+ * @Author	Thomas Hempel 		<thomas@work.de>
+ * @Author	Martin Ficzel		<martin@work.de>
+ * @Author	Patrick Kollodzik	<patrick@work.de>
+ * 
+ * $$Id: ds.tx_caretaker_typo3_extensions.xml 33 2008-06-13 14:00:38Z thomas $$
+ */
+-->
+
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<TCEforms>
+			<sheetTitle>HTTP-Communication</sheetTitle>
+		</TCEforms>
+		<type>array</type>
+		<el>
+		
+			<rsml_url>
+				<TCEforms>
+					<label>Remote Script URL  ATENTION: Security is your Problem so please be carefull </label>
+					<config>
+						<type>input</type>
+					</config>
+				</TCEforms>
+			</rsml_url>
+			
+			<rsml_id>
+				<TCEforms>
+					<label>Remote Script ID</label>
+					<config>
+						<type>input</type>
+					</config>
+				</TCEforms>
+			</rsml_id>
+
+			<rsml_version>
+				<TCEforms>
+					<label>Remote Script Version (&lt; and &gt; are allowed) </label>
+					<config>
+						<type>input</type>
+					</config>
+				</TCEforms>
+			</rsml_version>
+								
+			<expected_status>
+				<TCEforms>
+					<label>Expected Status of Remote Script.</label>
+					<config>
+						<type>input</type>
+					</config>
+				</TCEforms>
+			</expected_status>
+
+			<expected_value>
+				<TCEforms>
+					<label>Expected Value of Remote Script.</label>
+					<config>
+						<type>input</type>
+					</config>
+				</TCEforms>
+			</expected_value>
+			
+		</el>
+	</ROOT>
+</T3DataStructure>
