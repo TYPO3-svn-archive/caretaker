@@ -61,11 +61,16 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 		$config = $this->getConfiguration();
 
 		$rsmlUrl   = $config['rsmlUrl'];
+		if (strpos( $rsmlUrl, '://' ) === false  && $this->instance) {
+			$rsmlUrl = $this->instance->getUrl() . '/' . $rsmlUrl;
+		}
 
 		$expectedRsmlId      = $config['expectedRsmlId'];
 		$expectedRsmlVersion = $config['expectedRsmlVersion'];
 		$expectedStatus      = $config['expectedStatus'];
 		$expectedValue       = $config['expectedValue'];
+
+		print_r ( $config);
 		
 		if ( ! ( $rsmlUrl && $expectedRsmlId && $expectedRsmlVersion ) ) {
 			return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'You have to define URL ID and Version conditions for this test'.chr(10).var_export($config, true) );
@@ -73,9 +78,11 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 			$httpResult = $this->executeHttpRequest($rsmlUrl);
 			if ( $httpResult['response'] && $httpResult['info']['http_code'] == 200 ){
 
-				$xml      = new SimpleXMLElement( $httpResult['response'] );
-				$status   = 0;
-				$submessages = array();
+				try {
+					$xml = new SimpleXMLElement( $httpResult['response'] );
+				} catch (Exception $e ){
+					return tx_caretaker_TestResult::create( TX_CARETAKER_STATE_ERROR, 0, 'Returened result xml could not be parsed. ' . chr(10) . htmlspecialchars($httpResult['response']) );
+				}
 				
 				$returnedRsmlId      = ( isset($xml->rsmlId) ) ? (string)$xml->rsmlId : false;
 				$returnedRsmlVersion = ( isset($xml->rsmlVersion) ) ?  (string)$xml->rsmlVersion : false;
@@ -83,7 +90,10 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 				$returnedStatus  = ( isset($xml->status)  ) ? (string)$xml->status  : false;
 				$returnedValue   = ( isset($xml->value)   ) ? (string)$xml->value   : 0;
 				$returnedMessage = ( isset($xml->message) ) ? (string)$xml->message : false;
+				$returnedDescription = ( isset($xml->description) ) ? (string)$xml->description : false;
 
+				$submessages = array();
+				
 					// script id is wrong
 				if ( !$returnedRsmlId || $returnedRsmlId != $expectedRsmlId ) {
 					$this->decreaseState( TX_CARETAKER_STATE_ERROR );
@@ -102,43 +112,50 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 					);
 				}
 
-					// status
-				if ( $returnedStatus===FALSE || (int)$returnedStatus != (int)$expectedStatus ){
-					if ($returnedStatus){
-						$this->decreaseState( $returnedStatus );
-					} else {
-						$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+					// if the checks until now were ok
+				if ( $this->status == 0  ){
+					
+					if ( $expectedStatus || (int)$returnedStatus !== (int)$expectedStatus ){
+						if ($returnedStatus){
+							$this->decreaseState( $returnedStatus );
+						} else {
+							$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+						}
+						$submessages[] = new tx_caretaker_ResultMessage(
+							'Status was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
+							array( 'expected'=>$expectedStatus, 'returned' =>$returnedStatus )
+						);
 					}
-					$submessages[] = new tx_caretaker_ResultMessage(
-						'Status was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
-						array( 'expected'=>$expectedStatus, 'returned' =>$returnedStatus )
-					);
+
+						// value
+					if ( $expectedValue && !$this->isValueInRange( $returnedValue, $expectedValue)  ){
+						$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+						$submessages[] = new tx_caretaker_ResultMessage(
+							'Value was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
+							array( 'expected'=>$expectedValue, 'returned' =>$returnedValue )
+						);
+					}
+
+						// show description
+					if ($returnedDescription) {
+						$submessages[] = new tx_caretaker_ResultMessage( chr(10).$returnedDescription );
+					}
+
+						// submessages
+					if ($returnedMessage){
+						$submessages[] = new tx_caretaker_ResultMessage( $returnedMessage );
+					}
 				}
 
-					// value
-				if ( !$returnedValue || !$this->isValueInRange( $returnedValue, $expectedValue)  ){
-					$this->decreaseState( TX_CARETAKER_STATE_ERROR );
-					$submessages[] = new tx_caretaker_ResultMessage(
-						'Value was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
-						array( 'expected'=>$expectedValue, 'returned' =>$returnedValue )
-					);
-				}
-
-					// submessages
-				if ($returnedMessage){
-					$submessages[] = new tx_caretaker_ResultMessage( $returnedMessage );
-				}
-				
-				return tx_caretaker_TestResult::create($this->state, $returnedValue, 'Script Response was ###STATE###', $submessages );
+				return tx_caretaker_TestResult::create( $this->state, $returnedValue, '', $submessages );
 
 			} else {
 
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'Unexpected Script Response '.chr(10).var_export($httpResult, true) );
+				return tx_caretaker_TestResult::create( TX_CARETAKER_STATE_ERROR, 0, 'Unexpected Script Response' . chr(10) . $rsmlUrl . chr(10).var_export($httpResult, true) );
 				
 			}
 		}
-		
-		return $testResult;
+
 	}
 
 	/**
@@ -147,7 +164,11 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 	 * @return array 
 	 */
 	public function getConfiguration(){
+		
+		print_r( array( $this->getConfigValue('expected_status') ) );
+		
 		$config = array(
+			"instanceUrl"         => ( ($this->instance) ? $this->instance->getUrl() : '' ),
 			"rsmlUrl"             => $this->getConfigValue('rsml_url'),
 			"expectedRsmlId"      => $this->getConfigValue('rsml_id'),
 			"expectedRsmlVersion" => $this->getConfigValue('rsml_version'),
