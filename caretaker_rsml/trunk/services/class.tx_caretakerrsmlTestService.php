@@ -144,7 +144,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 
 						// submessages
 					if ($returnedMessage){
-						$submessages[] = new tx_caretaker_ResultMessage( $returnedMessage );
+						$submessages[] = new tx_caretaker_ResultMessage( 'Messages:' . chr(10) . $returnedMessage );
 					}
 				}
 
