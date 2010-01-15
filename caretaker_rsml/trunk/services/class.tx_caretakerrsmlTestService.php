@@ -92,6 +92,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 				$returnedMessage = ( isset($xml->message) ) ? (string)$xml->message : false;
 				$returnedDescription = ( isset($xml->description) ) ? (string)$xml->description : false;
 
+				$message = '';
 				$submessages = array();
 				
 					// script id is wrong
@@ -115,6 +116,11 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 					// if the checks until now were ok
 				if ( $this->status == 0  ){
 					
+						// show description
+					if ($returnedDescription) {
+						$message = $returnedDescription;
+					}
+
 					if ( $expectedStatus || (int)$returnedStatus !== (int)$expectedStatus ){
 						if ($returnedStatus){
 							$this->decreaseState( $returnedStatus );
@@ -136,18 +142,13 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 						);
 					}
 
-						// show description
-					if ($returnedDescription) {
-						$submessages[] = new tx_caretaker_ResultMessage( chr(10).$returnedDescription );
-					}
-
 						// submessages
 					if ($returnedMessage){
 						$submessages[] = new tx_caretaker_ResultMessage( $returnedMessage );
 					}
 				}
 
-				return tx_caretaker_TestResult::create( $this->state, $returnedValue, '', $submessages );
+				return tx_caretaker_TestResult::create( $this->state, $returnedValue, $message, $submessages );
 
 			} else {
 
