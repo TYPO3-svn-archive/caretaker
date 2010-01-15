@@ -35,8 +35,6 @@
  * $Id: class.tx_caretaker_Cli.php 28420 2010-01-05 16:51:51Z martoro $
  */
 
-require_once (t3lib_extMgm::extPath('caretaker').'/services/class.tx_caretaker_TestServiceBase.php');
-
 /**
  * The caretaker RSML Test.
  *
