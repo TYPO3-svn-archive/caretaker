@@ -1,60 +1,51 @@
 <?php
+/***************************************************************
+* Copyright notice
+*
+* (c) 2009 by n@work GmbH and networkteam GmbH
+*
+* All rights reserved
+*
+* This script is part of the Caretaker project. The Caretaker project
+* is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* The GNU General Public License can be found at
+* http://www.gnu.org/copyleft/gpl.html.
+*
+* This script is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+
 /**
  * This is a file of the caretaker project.
- * Copyright 2009 by n@work Internet Informationssystem GmbH (www.work.de)
- * 
- * @Author	Thomas Hempel 		<thomas@work.de>
- * @Author	Martin Ficzel		<martin@work.de>
- * @Author	Patrick Kollodzik	<patrick@work.de>
- * @Author	Thorben Kapp		<thorben@work.de>
- * 
- * This service runs the log file tests.
- * A logfile is read using the system functions wc, head and tail.
- * It reads the file in blocks of lines to avoid a memory overflow.
- * @todo The existance of the three needed functions should be checked.
- * Eventually you can override the isExecutable function from the parent class
- * and use it for that. Than this should return some kind of result or exception.
- * 
- * After reading one block the readed lines are processed, that means that they
- * are checked against the given date and if this matches also against the given pattern
- * how the error message, you are looking for, looks like in the log file.
- * 
- * If the pattern matches the information of the error message is put into an array.
- * 
- * NOTE: The script is currently used to find missing resources so the error message
- * that is produced at the end of the test looks like that and only includes the first to saved
- * subpatterns from the error message pattern.
- * @todo This should be improved that there can be used an own error messages that uses numbered markers
- * to insert the saved parts from the subpatterns in.
- * 
- * $$Id: class.tx_caretaker_typo3_extensions.php 33 2008-06-13 14:00:38Z thomas $$
+ * http://forge.typo3.org/projects/show/extension-caretaker
+ *
+ * Project sponsored by:
+ * n@work GmbH - http://www.work.de
+ * networkteam GmbH - http://www.networkteam.com/
+ *
+ * $Id$
  */
 
-/***************************************************************
- *  Copyright notice
+/**
+ * Test-Service to analyze logfiles
  *
- *  (c) 2009 Thorben Kapp <thorben@work.de>
- *  All rights reserved
+ * @author Martin Ficzel <martin@work.de>
+ * @author Thomas Hempel <thomas@work.de>
+ * @author Christopher Hlubek <hlubek@networkteam.com>
+ * @author Tobias Liebig <liebig@networkteam.com>
+ * @author Thorben Kapp <kapp@work.de>
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
-require_once (t3lib_extMgm::extPath('caretaker').'/services/class.tx_caretaker_TestServiceBase.php');
-
+ * @package TYPO3
+ * @subpackage caretaker_analyzer
+ */
 class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 	
 	protected $valueDescription = 'Matches';
