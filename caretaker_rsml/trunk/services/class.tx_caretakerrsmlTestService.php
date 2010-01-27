@@ -67,8 +67,6 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 		$expectedRsmlVersion = $config['expectedRsmlVersion'];
 		$expectedStatus      = $config['expectedStatus'];
 		$expectedValue       = $config['expectedValue'];
-
-		print_r ( $config);
 		
 		if ( ! ( $rsmlUrl && $expectedRsmlId && $expectedRsmlVersion ) ) {
 			return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, 0, 'You have to define URL ID and Version conditions for this test'.chr(10).var_export($config, true) );
@@ -163,9 +161,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 	 * @return array 
 	 */
 	public function getConfiguration(){
-		
-		print_r( array( $this->getConfigValue('expected_status') ) );
-		
+				
 		$config = array(
 			"instanceUrl"         => ( ($this->instance) ? $this->instance->getUrl() : '' ),
 			"rsmlUrl"             => $this->getConfigValue('rsml_url'),
