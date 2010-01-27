@@ -48,7 +48,7 @@
  */
 class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 	
-	private $state = TX_CARETAKER_STATE_OK;
+	private $state = tx_caretaker_Constants::state_ok;
 
 	/**
 	 * 
@@ -71,7 +71,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 		print_r ( $config);
 		
 		if ( ! ( $rsmlUrl && $expectedRsmlId && $expectedRsmlVersion ) ) {
-			return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'You have to define URL ID and Version conditions for this test'.chr(10).var_export($config, true) );
+			return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, 0, 'You have to define URL ID and Version conditions for this test'.chr(10).var_export($config, true) );
 		} else {
 			$httpResult = $this->executeHttpRequest($rsmlUrl);
 			if ( $httpResult['response'] && $httpResult['info']['http_code'] == 200 ){
@@ -79,7 +79,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 				try {
 					$xml = new SimpleXMLElement( $httpResult['response'] );
 				} catch (Exception $e ){
-					return tx_caretaker_TestResult::create( TX_CARETAKER_STATE_ERROR, 0, 'Returened result xml could not be parsed. ' . chr(10) . htmlspecialchars($httpResult['response']) );
+					return tx_caretaker_TestResult::create( tx_caretaker_Constants::state_error, 0, 'Returened result xml could not be parsed. ' . chr(10) . htmlspecialchars($httpResult['response']) );
 				}
 				
 				$returnedRsmlId      = ( isset($xml->rsmlId) ) ? (string)$xml->rsmlId : false;
@@ -95,7 +95,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 				
 					// script id is wrong
 				if ( !$returnedRsmlId || $returnedRsmlId != $expectedRsmlId ) {
-					$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+					$this->decreaseState( tx_caretaker_Constants::state_error );
 					$submessages[] = new tx_caretaker_ResultMessage(
 						'Script ID was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
 						array( 'expected'=>$expectedRsmlId, 'returned' =>$returnedRsmlId )
@@ -104,7 +104,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 
 					// script version is wrong
 				if ( !$returnedRsmlVersion || t3lib_div::int_from_ver($returnedRsmlVersion) != t3lib_div::int_from_ver( $expectedRsmlVersion ) ) {
-					$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+					$this->decreaseState( tx_caretaker_Constants::state_error );
 					$submessages[] = new tx_caretaker_ResultMessage(
 						'Script Version was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
 						array( 'expected'=>$expectedRsmlVersion, 'returned' =>$returnedRsmlVersion )
@@ -123,7 +123,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 						if ($returnedStatus){
 							$this->decreaseState( $returnedStatus );
 						} else {
-							$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+							$this->decreaseState( tx_caretaker_Constants::state_error );
 						}
 						$submessages[] = new tx_caretaker_ResultMessage(
 							'Status was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
@@ -133,7 +133,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 
 						// value
 					if ( $expectedValue && !$this->isValueInRange( $returnedValue, $expectedValue)  ){
-						$this->decreaseState( TX_CARETAKER_STATE_ERROR );
+						$this->decreaseState( tx_caretaker_Constants::state_error );
 						$submessages[] = new tx_caretaker_ResultMessage(
 							'Value was wrong. Expected ###VALUE_EXPECTED### returned ###VALUE_RETURNED###',
 							array( 'expected'=>$expectedValue, 'returned' =>$returnedValue )
@@ -150,7 +150,7 @@ class tx_caretakerrsmlTestService extends tx_caretaker_TestServiceBase {
 
 			} else {
 
-				return tx_caretaker_TestResult::create( TX_CARETAKER_STATE_ERROR, 0, 'Unexpected Script Response' . chr(10) . $rsmlUrl . chr(10).var_export($httpResult, true) );
+				return tx_caretaker_TestResult::create( tx_caretaker_Constants::state_error, 0, 'Unexpected Script Response' . chr(10) . $rsmlUrl . chr(10).var_export($httpResult, true) );
 				
 			}
 		}

@@ -82,7 +82,7 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 		$patterns = explode("\n",$this->getConfigValue('patterns_configuration'));
 		
 		// if the file is not available return a result with state error
-		if(!file_exists($this->logFile)) return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, 'File doesn\'t exist.');
+		if(!file_exists($this->logFile)) return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, 0, 'File doesn\'t exist.');
 		
 		// eval start and end time
 		switch($dateHours) {
@@ -112,7 +112,7 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 				break;
 			default:
 				// return an error result to indicate that something went wrong
-				return tx_caretaker_TestResult(TX_CARETAKER_STATE_ERROR, 0, 'No valid option for log time was selected!');
+				return tx_caretaker_TestResult(tx_caretaker_Constants::state_error, 0, 'No valid option for log time was selected!');
 				break;
 			/*
 			 * this could easily leed to memory overflow, so it is disabled
@@ -127,7 +127,7 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 		$lineCount = $this->getLineCount($logFile);
 		
 		// if the line count could not be retreived return a result with state error
-		if(!$lineCount) return tx_caretaker_TestResukt(TX_CARETAKER_STATE_ERROR, 0, 'Line count of the file could not be retrieved!');
+		if(!$lineCount) return tx_caretaker_TestResukt(tx_caretaker_Constants::state_error, 0, 'Line count of the file could not be retrieved!');
 		
 		$foundErrors = array();
 		
@@ -172,13 +172,13 @@ class tx_caretakeranalyzerTestService extends tx_caretaker_TestServiceBase {
 		// if no errors were found return result with state ok
 		if(empty($foundErrors)) {
 			
-			return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_OK, 0, 'No errors found');
+			return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_ok, 0, 'No errors found');
 			
 		// if there were errors, then return a result with state error, the number of errors found
 		// and the list of errors... might be a long list
 		} else {
 			
-			return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, count($foundErrors), $this->getErrorMessage($foundErrors));
+			return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, count($foundErrors), $this->getErrorMessage($foundErrors));
 		}
 	}
 	

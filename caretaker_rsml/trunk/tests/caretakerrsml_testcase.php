@@ -25,7 +25,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 			));
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_ERROR,  $result->getState()  );
+		$this->assertEquals( tx_caretaker_Constants::state_error,  $result->getState()  );
 	}
 
 	function testRunsOkIfConfigAndResultAreFine (){
@@ -60,7 +60,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_OK,  $result->getState()  );		
+		$this->assertEquals( tx_caretaker_Constants::state_ok,  $result->getState()  );		
 	}
 
 	function testFailsIfHttpFails(){
@@ -95,7 +95,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_ERROR,  $result->getState()  );
+		$this->assertEquals( tx_caretaker_Constants::state_error,  $result->getState()  );
 	}
 
 	function testFailsIfScriptIdIsWrong(){
@@ -130,7 +130,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_ERROR,  $result->getState()  );
+		$this->assertEquals( tx_caretaker_Constants::state_error,  $result->getState()  );
 	}
 
 	function testFailsIfScriptVersionIsTooLow(){
@@ -165,7 +165,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_ERROR,  $result->getState()  );
+		$this->assertEquals( tx_caretaker_Constants::state_error,  $result->getState()  );
 	}
 
 	function testReturnsWarningIfStatusIsOne(){
@@ -200,7 +200,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_WARNING,  $result->getState()  );
+		$this->assertEquals( tx_caretaker_Constants::state_warning,  $result->getState()  );
 	}
 
 	function testReturnsErrorIfStatusIsTwo(){
@@ -234,7 +234,7 @@ class tx_caretakersnmp_testcase extends tx_phpunit_testcase  {
 			));
 
 		$result = $rsml_test_service->runTest();
-		$this->assertEquals( TX_CARETAKER_STATE_ERROR,  $result->getState()  );
+		$this->assertEquals( tx_caretaker_Constants::state_error,  $result->getState()  );
 		
 	}
 

@@ -65,13 +65,13 @@ class tx_caretakerdummyTestService extends tx_caretaker_TestServiceBase {
 
 		switch ($result) {
 			case 0:
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_OK, 0, $message , $submessages );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_ok, 0, $message , $submessages );
 			case 1;
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_WARNING, 0, $message , $submessages  );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_warning, 0, $message , $submessages  );
 			case 2;
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_ERROR, 0, $message , $submessages  );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, 0, $message , $submessages  );
 			default:
-				return tx_caretaker_TestResult::create(TX_CARETAKER_STATE_UNDEFINED, 0, $message , $submessages  );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_undefined, 0, $message , $submessages  );
 		}
 	}
 }
