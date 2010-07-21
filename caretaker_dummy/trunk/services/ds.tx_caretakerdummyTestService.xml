@@ -54,6 +54,33 @@
 					</config>
 				</TCEforms>
 			</result>
+			<value>
+				<TCEforms>
+					<label>Select the desired value range</label>
+					<config>
+						<type>select</type>
+					    <items>
+					    	<numIndex index="0">
+					    		<numIndex index="0">none</numIndex>
+								<numIndex index="1">0</numIndex>
+					    	</numIndex>
+					    	<numIndex index="1">
+					    		<numIndex index="0">0-10</numIndex>
+								<numIndex index="1">10</numIndex>
+					    	</numIndex>
+					    	<numIndex index="2">
+					    		<numIndex index="0">0-100</numIndex>
+								<numIndex index="1">100</numIndex>
+					    	</numIndex>
+					    	<numIndex index="3">
+					    		<numIndex index="0">0-1000</numIndex>
+								<numIndex index="1">1000</numIndex>
+					    	</numIndex>
+					  	</items>
+					  	<default>0</default>
+					</config>
+				</TCEforms>
+			</value>
 		</el>
 	</ROOT>
 </T3DataStructure>

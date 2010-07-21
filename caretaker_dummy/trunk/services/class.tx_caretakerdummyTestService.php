@@ -51,10 +51,17 @@ class tx_caretakerdummyTestService extends tx_caretaker_TestServiceBase {
 	public function runTest() {
 
 		$result    = $this->getConfigValue('result');
+		$value     = $this->getConfigValue('value');
 
 		if ($result == 'random') {
 			$result = rand(-1,2);
 		}
+		
+		if ( $value ){
+			$returnValue = rand (0, $value); 
+ 		} else {
+ 			$returnValue = 0;
+ 		}
 
 		$message = new tx_caretaker_ResultMessage( 'foo ###VALUE_FOO### baz' , array('foo'=>'bar') );
 
@@ -65,13 +72,13 @@ class tx_caretakerdummyTestService extends tx_caretaker_TestServiceBase {
 
 		switch ($result) {
 			case 0:
-				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_ok, 0, $message , $submessages );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_ok, $returnValue0, $message , $submessages );
 			case 1;
-				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_warning, 0, $message , $submessages  );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_warning, $returnValue, $message , $submessages  );
 			case 2;
-				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, 0, $message , $submessages  );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_error, $returnValue, $message , $submessages  );
 			default:
-				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_undefined, 0, $message , $submessages  );
+				return tx_caretaker_TestResult::create(tx_caretaker_Constants::state_undefined, $returnValue, $message , $submessages  );
 		}
 	}
 }
